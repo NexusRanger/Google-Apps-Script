@@ -1,0 +1,28 @@
+function countEmails() {
+  // Set the date range
+  var today = new Date();
+  var oneWeekAgo = new Date();
+  oneWeekAgo.setDate(today.getDate() - 7);              // set the number of days here
+  
+  // Search for emails within the date range
+  var threads = GmailApp.search('after:' + oneWeekAgo.toISOString().substring(0,10));
+  
+  // Count the number of emails from each sender
+  var senders = {};
+  for (var i = 0; i < threads.length; i++) {
+    var messages = threads[i].getMessages();
+    for (var j = 0; j < messages.length; j++) {
+      var sender = messages[j].getFrom();
+      if (senders[sender] == undefined) {
+        senders[sender] = 1;
+      } else {
+        senders[sender]++;
+      }
+    }
+  }
+  
+  // Log the results
+  for (var sender in senders) {
+    Logger.log(sender + ': ' + senders[sender]);
+  }
+}
